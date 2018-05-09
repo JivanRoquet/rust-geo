@@ -78,7 +78,7 @@ where
                 )
             );
 
-            if (lambda - lambdaP).abs() > T::from(1e-12).unwrap() {
+            if lambda.abs_sub(lambdaP) > T::from(1e-12).unwrap() {
                 iterLimit -= 1;
                 if iterLimit > 0 {
                     continue;
@@ -145,7 +145,7 @@ mod test {
         let b = Point::<f64>::new(17.064064, 48.158800);
         assert_relative_eq!(
             a.vincenty_distance(&b),
-            788.4148295236967
+            787.6566129529918
         );
     }
 
@@ -155,7 +155,7 @@ mod test {
         let b = Point::<f64>::new(16.372477, 48.208810);
         assert_relative_eq!(
             a.vincenty_distance(&b),
-            55073.68246366003
+            54992.56820733082
         );
     }
 
