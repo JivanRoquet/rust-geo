@@ -32,11 +32,13 @@ where
         let t_4096 = T::from(4096).unwrap();
         let t_16384 = T::from(16384).unwrap();
 
-        // Beginning of vincenty algorithm
-
+        // major semi-axes of the ellipsoid
         let a = T::from(6378137.0).unwrap();
+        // minor semi-axes of the ellipsoid
         let b = T::from(6356752.314245).unwrap();
+        // flattening (a−b)/a
         let f = T::from(298.257223563).unwrap().recip();
+        // difference in longitude
         let L = (rhs.lng() - self.lng()).to_radians();
         let U1 = ((t_1 - f) * self.lat().to_radians().tan()).atan();
         let U2 = ((t_1 - f) * rhs.lat().to_radians().tan()).atan();
