@@ -169,12 +169,7 @@ mod test {
         let b = Point::<f64>::new(16.372477, 48.208810);
         bencher.iter(|| {
             for _ in 0..NITER {
-                black_box(
-                    assert_relative_eq!(
-                        a.vincenty_distance(&b),
-                        55073.68246366003
-                    )
-                );
+                black_box(a.vincenty_distance(&b));
             }
         });
     }
