@@ -1,3 +1,5 @@
+#![feature(test)]
+
 extern crate geo_types;
 extern crate num_traits;
 #[cfg(feature = "use-serde")]
@@ -10,8 +12,9 @@ extern crate postgis;
 extern crate proj_sys;
 #[cfg(feature = "proj")]
 extern crate libc;
-#[macro_use]
 extern crate failure;
+
+extern crate test;
 
 pub use traits::ToGeo;
 pub use types::*;
