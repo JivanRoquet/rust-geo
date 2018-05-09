@@ -49,3 +49,5 @@ pub mod winding_order;
 /// Coordinate projections and transformations using [PROJ](http://proj4.org) v5.0.x
 #[cfg(feature = "proj")]
 pub mod proj;
+
+pub mod vincenty_distance;
