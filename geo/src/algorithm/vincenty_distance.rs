@@ -78,14 +78,13 @@ where
                 )
             );
 
-            if lambda.abs_sub(lambdaP) > T::from(1e-12).unwrap() {
-                iterLimit -= 1;
-                if iterLimit > 0 {
-                    continue;
-                } else {
-                    break;
-                }
-            } else {
+            if lambda.abs_sub(lambdaP) <= T::from(1e-12).unwrap() {
+                break;
+            }
+
+            iterLimit -= 1;
+
+            if iterLimit == 0 {
                 break;
             }
         }
