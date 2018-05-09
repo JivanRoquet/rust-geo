@@ -1,5 +1,5 @@
 use num_traits::{Float, FromPrimitive};
-use ::Point;
+use Point;
 
 pub trait VincentyDistance<T, Rhs = Self> {
     fn vincenty_distance(&self, rhs: &Rhs) -> T;
@@ -56,12 +56,10 @@ where
         loop {
             let sinLambda = lambda.sin();
             let cosLambda = lambda.cos();
-            sinSigma = (
-                (cosU2 * sinLambda)
-                    * (cosU2 * sinLambda)
-                    + (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
-                    * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
-            ).sqrt();
+            sinSigma = ((cosU2 * sinLambda) * (cosU2 * sinLambda)
+                + (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+                    * (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda))
+                .sqrt();
             if sinSigma.is_zero() {
                 return t_0;
             }
@@ -72,11 +70,10 @@ where
             cos2SigmaM = cosSigma - t_2 * sinU1 * sinU2 / cosSqAlpha;
             let C = f / t_16 * cosSqAlpha * (t_4 + f * (t_4 - t_3 * cosSqAlpha));
             lambdaP = lambda;
-            lambda = L + (t_1 - C) * f * sinAlpha * (
-                sigma + C * sinSigma * (
-                    cos2SigmaM + C * cosSigma * (-t_1 + t_2 * cos2SigmaM * cos2SigmaM)
-                )
-            );
+            lambda = L + (t_1 - C) * f * sinAlpha
+                * (sigma
+                    + C * sinSigma
+                        * (cos2SigmaM + C * cosSigma * (-t_1 + t_2 * cos2SigmaM * cos2SigmaM)));
 
             if lambda.abs_sub(lambdaP) <= T::from(1e-12).unwrap() {
                 break;
@@ -94,28 +91,15 @@ where
         }
 
         let uSq = cosSqAlpha * (a * a - b * b) / (b * b);
-        let A = t_1 + uSq / t_16384 * (
-            t_4096 + uSq * (
-                -t_768 + uSq * (
-                    t_320 - t_175 * uSq
-                )
-            )
-        );
-        let B = uSq / t_1024 * (
-            t_256 + uSq * (
-                -t_128 + uSq * (
-                    t_74 - t_47 * uSq
-                )
-            )
-        );
+        let A = t_1 + uSq / t_16384 * (t_4096 + uSq * (-t_768 + uSq * (t_320 - t_175 * uSq)));
+        let B = uSq / t_1024 * (t_256 + uSq * (-t_128 + uSq * (t_74 - t_47 * uSq)));
 
-        let deltaSigma =
-            B * sinSigma
-                * (cos2SigmaM + B / t_4
-                    * (cosSigma
-                        * (-t_1 + t_2 * cos2SigmaM * cos2SigmaM) - B / t_6 * cos2SigmaM
-                            * (-t_3 + t_4 * sinSigma * sinSigma)
-                                * (-t_3 + t_4 * cos2SigmaM * cos2SigmaM)));
+        let deltaSigma = B * sinSigma
+            * (cos2SigmaM
+                + B / t_4
+                    * (cosSigma * (-t_1 + t_2 * cos2SigmaM * cos2SigmaM)
+                        - B / t_6 * cos2SigmaM * (-t_3 + t_4 * sinSigma * sinSigma)
+                            * (-t_3 + t_4 * cos2SigmaM * cos2SigmaM)));
 
         let s = b * A * (sigma - deltaSigma);
 
@@ -131,34 +115,24 @@ mod test {
     fn test_vincenty_distance_1() {
         let a = Point::<f64>::new(17.072561, 48.154563);
         let b = Point::<f64>::new(17.072562, 48.154564);
-        assert_relative_eq!(
-            a.vincenty_distance(&b),
-            0.13378944117648012
-        );
+        assert_relative_eq!(a.vincenty_distance(&b), 0.13378944117648012);
     }
-
 
     #[test]
     fn test_vincenty_distance_2() {
         let a = Point::<f64>::new(17.072561, 48.154563);
         let b = Point::<f64>::new(17.064064, 48.158800);
-        assert_relative_eq!(
-            a.vincenty_distance(&b),
-            787.6566129529918
-        );
+        assert_relative_eq!(a.vincenty_distance(&b), 787.6566129529918);
     }
 
     #[test]
     fn test_vincenty_distance_3() {
         let a = Point::<f64>::new(17.107558, 48.148636);
         let b = Point::<f64>::new(16.372477, 48.208810);
-        assert_relative_eq!(
-            a.vincenty_distance(&b),
-            54992.56820733082
-        );
+        assert_relative_eq!(a.vincenty_distance(&b), 54992.56820733082);
     }
 
-    use ::test::{black_box, Bencher};
+    use test::{black_box, Bencher};
 
     const NITER: usize = 10_000;
 
