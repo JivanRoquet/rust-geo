@@ -36,7 +36,7 @@ where
 
         let a = T::from(6378137.0).unwrap();
         let b = T::from(6356752.314245).unwrap();
-        let f = t_1 / T::from(298.257223563).unwrap();
+        let f = T::from(298.257223563).unwrap().recip();
         let L = (rhs.lng() - self.lng()).to_radians();
         let U1 = ((t_1 - f) * self.lat().to_radians().tan()).atan();
         let U2 = ((t_1 - f) * rhs.lat().to_radians().tan()).atan();
