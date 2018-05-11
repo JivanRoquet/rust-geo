@@ -1,3 +1,9 @@
+// A few resources:
+//
+// - http://www.movable-type.co.uk/scripts/latlong-vincenty.html
+// - https://nathanrooy.github.io/posts/2016-12-18/vincenty-formula-with-python/
+// - https://github.com/janantala/GPS-distance/blob/master/java/Distance.java
+
 use num_traits::{Float, FromPrimitive};
 use Point;
 
@@ -12,7 +18,6 @@ where
     /// Number returned is in meters.
     #[allow(non_snake_case)]
     fn vincenty_distance(&self, rhs: &Point<T>) -> T {
-        // Magic numbers
         let t_0 = T::zero();
         let t_1 = T::one();
         let t_2 = T::from(2).unwrap();
@@ -31,15 +36,19 @@ where
         let t_4096 = T::from(4096).unwrap();
         let t_16384 = T::from(16384).unwrap();
 
-        // major semi-axes of the ellipsoid
+        // Length of semi-major axis of the ellipsoid a.k.a. radius of the
+        // equator in meters (WGS-84)
         let a = T::from(6378137.0).unwrap();
-        // minor semi-axes of the ellipsoid
+        // Length of semi-minor axis of the ellipsoid (radius at the poles,
+        // 6356752.314245 meters in WGS-84)
         let b = T::from(6356752.314245).unwrap();
-        // flattening (a−b)/a
+        // Flattening of the ellipsoid (WGS-84). equivalent to: (a - b) / a
         let f = T::from(298.257223563).unwrap().recip();
-        // difference in longitude
+        // Difference in longitude
         let L = (rhs.lng() - self.lng()).to_radians();
+        // Reduced latitude (latitude on the auxiliary sphere)
         let U1 = ((t_1 - f) * self.lat().to_radians().tan()).atan();
+        // Reduced latitude (latitude on the auxiliary sphere)
         let U2 = ((t_1 - f) * rhs.lat().to_radians().tan()).atan();
         let sinU1 = U1.sin();
         let cosU1 = U1.cos();
@@ -50,6 +59,7 @@ where
         let mut cos2SigmaM;
         let mut cosSigma;
         let mut sigma;
+        // Longitude of the points on the auxiliary sphere
         let mut lambda = L;
         let mut lambdaP;
         let mut iterLimit = 100;
