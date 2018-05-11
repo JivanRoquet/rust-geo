@@ -10,6 +10,7 @@ pub trait VincentyLength<T, RHS = Self> {
 impl<T> VincentyLength<T> for Line<T>
     where T: Float + FromPrimitive
 {
+    /// The units of the returned value is meters.
     fn vincenty_length(&self) -> T {
         self.start.vincenty_distance(&self.end)
     }

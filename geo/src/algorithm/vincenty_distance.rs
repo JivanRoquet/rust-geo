@@ -15,7 +15,7 @@ impl<T> VincentyDistance<T, Point<T>> for Point<T>
 where
     T: Float + FromPrimitive,
 {
-    /// Number returned is in meters.
+    /// The units of the returned value is meters.
     #[allow(non_snake_case)]
     fn vincenty_distance(&self, rhs: &Point<T>) -> T {
         let t_0 = T::zero();
