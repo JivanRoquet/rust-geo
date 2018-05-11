@@ -13,7 +13,6 @@ where
     #[allow(non_snake_case)]
     fn vincenty_distance(&self, rhs: &Point<T>) -> T {
         // Magic numbers
-
         let t_0 = T::zero();
         let t_1 = T::one();
         let t_2 = T::from(2).unwrap();
@@ -77,7 +76,7 @@ where
                     + C * sinSigma
                         * (cos2SigmaM + C * cosSigma * (-t_1 + t_2 * cos2SigmaM * cos2SigmaM)));
 
-            if lambda.abs_sub(lambdaP) <= T::from(1e-12).unwrap() {
+            if (lambda - lambdaP).abs() <= T::from(1e-12).unwrap() {
                 break;
             }
 
@@ -124,28 +123,14 @@ mod test {
     fn test_vincenty_distance_2() {
         let a = Point::<f64>::new(17.072561, 48.154563);
         let b = Point::<f64>::new(17.064064, 48.158800);
-        assert_relative_eq!(a.vincenty_distance(&b), 787.6566129529918);
+        assert_relative_eq!(a.vincenty_distance(&b), 788.4148295236967);
     }
 
     #[test]
     fn test_vincenty_distance_3() {
         let a = Point::<f64>::new(17.107558, 48.148636);
         let b = Point::<f64>::new(16.372477, 48.208810);
-        assert_relative_eq!(a.vincenty_distance(&b), 54992.56820733082);
+        assert_relative_eq!(a.vincenty_distance(&b), 55073.68246366003);
     }
 
-    use test::{black_box, Bencher};
-
-    const NITER: usize = 10_000;
-
-    #[bench]
-    fn bench_vincenty(bencher: &mut Bencher) {
-        let a = Point::<f64>::new(17.107558, 48.148636);
-        let b = Point::<f64>::new(16.372477, 48.208810);
-        bencher.iter(|| {
-            for _ in 0..NITER {
-                black_box(a.vincenty_distance(&b));
-            }
-        });
-    }
 }

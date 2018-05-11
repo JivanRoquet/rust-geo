@@ -51,3 +51,5 @@ pub mod winding_order;
 pub mod proj;
 
 pub mod vincenty_distance;
+
+pub mod vincenty_length;
