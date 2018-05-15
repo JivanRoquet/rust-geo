@@ -10,6 +10,8 @@ extern crate postgis;
 extern crate proj_sys;
 #[cfg(feature = "proj")]
 extern crate libc;
+#[cfg(feature = "use-proj")]
+extern crate proj;
 extern crate failure;
 
 pub use traits::ToGeo;
@@ -56,6 +58,6 @@ pub mod prelude {
     pub use algorithm::from_postgis::FromPostgis;
     #[cfg(feature = "postgis-integration")]
     pub use algorithm::to_postgis::ToPostgis;
-    #[cfg(feature = "proj")]
-    pub use algorithm::proj::{Proj};
+    #[cfg(feature = "use-proj")]
+    pub use algorithm::proj::Proj;
 }

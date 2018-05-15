@@ -17,10 +17,10 @@ use std::ops::Neg;
 use std::ops::Sub;
 
 use num_traits::{Float, Num, NumCast, Signed, ToPrimitive};
-use std::iter::{self, FromIterator, Iterator};
+use std::iter::{FromIterator, Iterator};
 
 #[cfg(feature = "spade")]
-use spade::{BoundingRect, PointN, SpatialObject, TwoDimensional, SpadeNum};
+use spade::{BoundingRect, PointN, SpadeNum, SpatialObject, TwoDimensional};
 
 /// The type of an x or y value of a point/coordinate.
 ///
@@ -50,6 +50,15 @@ impl<T: CoordinateType> From<(T, T)> for Coordinate<T> {
     }
 }
 
+impl<T: CoordinateType> From<[T; 2]> for Coordinate<T> {
+    fn from(coords: [T; 2]) -> Self {
+        Coordinate {
+            x: coords[0],
+            y: coords[1],
+        }
+    }
+}
+
 /// A single Point in 2D space.
 ///
 /// Points can be created using the `new(x, y)` constructor, or from a `Coordinate` or pair of points.
@@ -75,6 +84,12 @@ impl<T: CoordinateType> From<Coordinate<T>> for Point<T> {
 impl<T: CoordinateType> From<(T, T)> for Point<T> {
     fn from(coords: (T, T)) -> Point<T> {
         Point::new(coords.0, coords.1)
+    }
+}
+
+impl<T: CoordinateType> From<[T; 2]> for Point<T> {
+    fn from(coords: [T; 2]) -> Point<T> {
+        Point::new(coords[0], coords[1])
     }
 }
 
@@ -471,6 +486,11 @@ where
 /// let line: LineString<f32> = vec![(0., 0.), (10., 0.)].into();
 /// ```
 ///
+/// ```
+/// # use geo_types::{LineString, Point};
+/// let line: LineString<f64> = vec![[0., 0.], [10., 0.]].into();
+/// ```
+///
 /// Or `collect`ing from a Point iterator
 ///
 /// ```
@@ -518,15 +538,12 @@ impl<T: CoordinateType> LineString<T> {
     /// );
     /// assert!(lines.next().is_none());
     /// ```
-    pub fn lines<'a>(&'a self) -> Box<Iterator<Item = Line<T>> + 'a> {
-        if self.0.len() < 2 {
-            return Box::new(iter::empty());
-        }
-        Box::new(self.0.windows(2).map(|w| unsafe {
+    pub fn lines<'a>(&'a self) -> impl Iterator<Item = Line<T>> + 'a {
+        self.0.windows(2).map(|w| unsafe {
             // As long as the LineString has at least two points, we shouldn't
             // need to do bounds checking here.
             Line::new(*w.get_unchecked(0), *w.get_unchecked(1))
-        }))
+        })
     }
 
     pub fn points(&self) -> ::std::slice::Iter<Point<T>> {
@@ -597,6 +614,15 @@ impl<T: CoordinateType> IntoIterator for MultiLineString<T> {
 /// A representation of an area. Its outer boundary is represented by a [`LineString`](struct.LineString.html) that is both closed and simple
 ///
 /// It has one exterior *ring* or *shell*, and zero or more interior rings, representing holes.
+///
+/// Polygons can be created from collections of `Point`-like objects, such as arrays or tuples:
+///
+/// ```
+/// use geo_types::{Point, LineString, Polygon};
+/// let poly1 = Polygon::new(vec![[0., 0.], [10., 0.]].into(), vec![]);
+/// let poly2 = Polygon::new(vec![(0., 0.), (10., 0.)].into(), vec![]);
+/// ```
+///
 #[derive(PartialEq, Clone, Debug)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Polygon<T>
@@ -913,14 +939,12 @@ mod test {
             Point::new(1., 0.),
             Point::new(0., 0.),
         ]);
-        let interiors = vec![
-            LineString(vec![
-                Point::new(0.1, 0.1),
-                Point::new(0.9, 0.9),
-                Point::new(0.9, 0.1),
-                Point::new(0.1, 0.1),
-            ]),
-        ];
+        let interiors = vec![LineString(vec![
+            Point::new(0.1, 0.1),
+            Point::new(0.9, 0.9),
+            Point::new(0.9, 0.1),
+            Point::new(0.1, 0.1),
+        ])];
         let p = Polygon::new(exterior.clone(), interiors.clone());
 
         assert_eq!(p.exterior, exterior);

@@ -47,8 +47,11 @@ pub mod haversine_length;
 /// Calculate, and work with, the winding order of Linestrings
 pub mod winding_order;
 /// Coordinate projections and transformations using [PROJ](http://proj4.org) v5.0.x
-#[cfg(feature = "proj")]
+#[cfg(feature = "use-proj")]
 pub mod proj;
+
+/// Helper functions for the "fast path" variant of the Polygon-Polygon distance method
+pub(crate) mod polygon_distance_fast_path;
 
 pub mod vincenty_distance;
 
