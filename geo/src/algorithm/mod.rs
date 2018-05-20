@@ -12,6 +12,8 @@ pub mod bearing;
 pub mod euclidean_length;
 /// Returns the Euclidean distance between two geometries.
 pub mod euclidean_distance;
+/// Returns a new Point along a great circle between two points.
+pub mod haversine_intermediate;
 /// Returns a new Point using distance and bearing.
 pub mod haversine_destination;
 /// Returns the Haversine distance between two geometries.
@@ -51,3 +53,7 @@ pub mod winding_order;
 pub mod proj;
 /// Helper functions for the "fast path" variant of the Polygon-Polygon distance method
 pub(crate) mod polygon_distance_fast_path;
+
+pub mod vincenty_distance;
+
+pub mod vincenty_length;

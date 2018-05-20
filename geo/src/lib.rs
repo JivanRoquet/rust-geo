@@ -8,7 +8,7 @@ extern crate spade;
 extern crate postgis;
 #[cfg(feature = "use-proj")]
 extern crate proj;
-#[macro_use]
+#[cfg_attr(all(test, feature = "use-proj"), macro_use)]
 extern crate failure;
 
 pub use traits::ToGeo;
@@ -40,6 +40,7 @@ pub mod prelude {
     pub use algorithm::euclidean_distance::EuclideanDistance;
     pub use algorithm::euclidean_length::EuclideanLength;
     pub use algorithm::extremes::ExtremePoints;
+    pub use algorithm::haversine_intermediate::HaversineIntermediate;
     pub use algorithm::haversine_destination::HaversineDestination;
     pub use algorithm::haversine_distance::HaversineDistance;
     pub use algorithm::intersects::Intersects;
@@ -57,4 +58,6 @@ pub mod prelude {
     pub use algorithm::to_postgis::ToPostgis;
     #[cfg(feature = "use-proj")]
     pub use algorithm::proj::Proj;
+    pub use algorithm::vincenty_distance::VincentyDistance;
+    pub use algorithm::vincenty_length::VincentyLength;
 }
