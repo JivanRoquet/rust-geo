@@ -214,4 +214,14 @@ mod test {
         let route = p1.haversine_intermediate_fill(&p2, max_dist, include_ends);
         assert_eq!(route, vec![p1, i25, i50, i75, p2]);
     }
+
+    #[test]
+    fn crossing_dateline_test() {
+        let p1 = Point::<f64>::new(170.0,  40.0);
+        let p2 = Point::<f64>::new(-170.0, 40.0);
+        let i49 = p1.clone().haversine_intermediate(&p2, 0.49);
+        let i51 = p1.clone().haversine_intermediate(&p2, 0.51);
+        assert_relative_eq!(i49.x(),  179.8, epsilon=0.1);
+        assert_relative_eq!(i51.x(), -179.8, epsilon=0.1);
+    }
 }
